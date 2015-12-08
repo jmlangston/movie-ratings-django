@@ -1,0 +1,10 @@
+Django==1.8.5
+argparse==1.4.0
+pbr==1.8.1
+pywatchman==1.2.0
+six==1.10.0
+stevedore==1.9.0
+virtualenv==13.1.2
+virtualenv-clone==0.2.6
+virtualenvwrapper==3.7
+wsgiref==0.1.2
