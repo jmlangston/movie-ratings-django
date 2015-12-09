@@ -1,6 +1,6 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 
 from .models import User, Movie, Rating
 
@@ -36,7 +36,7 @@ def movie_details(request, movie_id):
 	return render(request, 'ratings/movie_details.html', {'movie': movie})
 
 
-def login(request):
+def login_view(request):
 	""" Login page """
 
 	if request.method == "POST":
@@ -46,8 +46,13 @@ def login(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user) # save user in session
-				return redirect('ratings/index.html') # redirect to home page
+				return redirect('ratings:index') # redirect to home page
 		else:
 			return render(request, 'ratings/login.html') # TODO - add flash message re invalid credentials
 	else:
 		return render(request, 'ratings/login.html')
+
+
+def logout(request):
+	logout(request) # won't throw an error if user wasn't logged in
+	return redirect('ratings:index') # redirect to home page
