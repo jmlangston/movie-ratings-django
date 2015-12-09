@@ -5,7 +5,7 @@
 	<ul>
 		{% for user in user_list %}
 		<li>
-			<a href="/movieratings/users/{{ user.id }}/">User {{ user.id }}</a>
+			<a href="{% url 'ratings:user_details' user.id %}">User {{ user.id }}</a>
 		</li>
 		{% endfor %}
 	</ul>

@@ -5,7 +5,7 @@
 	<ul>
 		{% for movie in movie_list %}
 		<li>
-			<a href="/movieratings/movies/{{ movie.id }}/">{{ movie.title }}</a>
+			<a href="{% url 'ratings:movie_details' movie.id %}">{{ movie.title }}</a>
 		</li>
 		{% endfor %}
 	</ul>
