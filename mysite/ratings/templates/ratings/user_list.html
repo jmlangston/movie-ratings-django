@@ -1,7 +1,13 @@
-<ul>
-	{% for user in user_list %}
-	<li>
-		<a href="/movieratings/users/{{ user.id }}/">User {{ user.id }}</a>
-	</li>
-	{% endfor %}
-</ul>
+{% extends 'ratings/base.html' %}
+
+{% block content %}
+
+	<ul>
+		{% for user in user_list %}
+		<li>
+			<a href="/movieratings/users/{{ user.id }}/">User {{ user.id }}</a>
+		</li>
+		{% endfor %}
+	</ul>
+
+{% endblock %}
