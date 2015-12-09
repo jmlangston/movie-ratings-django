@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 
@@ -33,3 +34,20 @@ def movie_details(request, movie_id):
 
 	movie = get_object_or_404(Movie, pk=movie_id)
 	return render(request, 'ratings/movie_details.html', {'movie': movie})
+
+
+def login(request):
+	""" Login page """
+
+	if request.method == "POST":
+		username = request.POST['username']
+		password = request.POST['password']
+		user = authenticate(username=username, password=password) # returns User object if valid, returns None if invalid
+		if user is not None:
+			if user.is_active:
+				login(request, user) # save user in session
+				return redirect('ratings/index.html') # redirect to home page
+		else:
+			return render(request, 'ratings/login.html') # TODO - add flash message re invalid credentials
+	else:
+		return render(request, 'ratings/login.html')

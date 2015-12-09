@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Log In to Movie Ratings</title>
+</head>
+<body>
+
+	<form action="{% url 'ratings:login' %}" method="POST">
+	{% csrf_token %}
+		<label>Username:
+			<input type="text" name="username">
+		</label>
+		<label>Password:
+			<input type="password" name="password">
+		</label>
+		<input type="submit" value="Let's rate some movies!">
+	</form>
+
+</body>
+</html>
