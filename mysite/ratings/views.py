@@ -6,7 +6,7 @@ from .models import User, Movie, Rating
 
 
 def index(request):
-	return HttpResponse("Home page")
+	return render(request, 'ratings/index.html')
 
 def user_list(request):
 	""" Displays a list of users """
