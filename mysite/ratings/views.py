@@ -1,5 +1,6 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth.models import User, UserManager
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 
@@ -46,13 +47,31 @@ def login_view(request):
 		user = authenticate(username=username, password=password) # returns User object if valid, returns None if invalid
 		if user is not None:
 			if user.is_active:
-				login(request, user) # save user in session
+				login(request, user) # add user to session
 				messages.add_message(request, messages.SUCCESS, "You have successfully logged in!")
 				return redirect('ratings:index') # redirect to home page
 		else:
 			return render(request, 'ratings/login.html') # TODO - add flash message re invalid credentials
 	else:
 		return render(request, 'ratings/login.html')
+
+
+def register(request):
+	""" Create a new user account """
+
+	if request.method == "POST":
+		username = request.POST['username']
+		password = request.POST['password']
+
+		usermanager = UserManager()
+		user = usermanager.create_user(username=username, password=password)
+		# user = get_user_model().objects.create_user ... ???
+		# user.save() # save new user in db
+		login(request, user) # add user to session
+		messages.add_message(request, messages.SUCCESS, "Thank you for registering!")
+		return redirect('ratings:index')
+	else:
+		return render(request, 'ratings/register.html')
 
 
 def logout_view(request):
