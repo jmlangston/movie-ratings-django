@@ -6,11 +6,26 @@
 <body>
 	<h2>Movie Ratings</h2>
 
-	<a href="{% url 'ratings:login' %}">Log In</a>
+	{% if not user.is_authenticated %}
+		<p>Log in or create an account to rate movies!</p>
+		<a href="{% url 'ratings:login' %}">Log In</a>
+	{% endif %}
 
-	<a href="{% url 'ratings:logout' %}">Log Out</a>
+
+	{% if user.is_authenticated %}
+		<p>You are logged in as {{ user.username }}</p>
+		<a href="{% url 'ratings:logout' %}">Log Out</a>
+	{% endif %}
 
 	<hr>
+
+	{% if messages %}
+	<ul class="messages">
+		{% for message in messages %}
+		<li{% if message.tags %} class="{{ message.tags}}"{% endif %}>{{ message }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
 
 	{% block content %}
 	{% endblock %}

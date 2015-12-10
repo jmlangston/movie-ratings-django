@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -46,6 +47,7 @@ def login_view(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user) # save user in session
+				messages.add_message(request, messages.SUCCESS, "You have successfully logged in!")
 				return redirect('ratings:index') # redirect to home page
 		else:
 			return render(request, 'ratings/login.html') # TODO - add flash message re invalid credentials
@@ -53,6 +55,7 @@ def login_view(request):
 		return render(request, 'ratings/login.html')
 
 
-def logout(request):
+def logout_view(request):
 	logout(request) # won't throw an error if user wasn't logged in
+	messages.add_message(request, messages.SUCCESS, "You have successfully logged out!")
 	return redirect('ratings:index') # redirect to home page
