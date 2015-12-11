@@ -2,11 +2,13 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -15,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=200)),
-                ('release_date', models.DateField()),
+                ('release_date', models.DateTimeField()),
                 ('imdb_url', models.CharField(max_length=200)),
             ],
         ),
@@ -24,22 +26,29 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('score', models.IntegerField(default=0)),
-                ('movie', models.ForeignKey(to='ratings.Movie')),
+                ('movie_id', models.ForeignKey(to='ratings.Movie')),
             ],
         ),
         migrations.CreateModel(
-            name='User',
+            name='Reviewer',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('email', models.CharField(max_length=100)),
-                ('password', models.CharField(max_length=15)),
+                ('username', models.CharField(max_length=20)),
                 ('age', models.IntegerField(default=0)),
                 ('zipcode', models.CharField(max_length=5)),
             ],
         ),
+        migrations.CreateModel(
+            name='UserProfile',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('reviewer_id', models.ForeignKey(to='ratings.Reviewer')),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
         migrations.AddField(
             model_name='rating',
-            name='user',
-            field=models.ForeignKey(to='ratings.User'),
+            name='reviewer_id',
+            field=models.ForeignKey(to='ratings.Reviewer'),
         ),
     ]

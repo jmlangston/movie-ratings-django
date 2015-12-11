@@ -4,16 +4,41 @@
 	<title>Register for Movie Ratings</title>
 </head>
 <body>
-	<form action="{% url 'ratings:register' %}" method="POST">
-	{% csrf_token %}
-		<label>Choose a username:
-			<input type="text" name="username">
-		</label>
-		<label>Choose a password:
-			<input type="password" name="password">
-		</label>
+
+	<!-- {% if messages %} -->
+<!-- 	<ul class="messages">
+		{% for message in messages %}
+		<li{% if message.tags %} class="{{ message.tags}}"{% endif %}>{{ message }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+ -->
+ 	{% if registered %}
+ 	<strong>Thank you for registering!</strong>
+ 	<a href="{% url 'ratings:index' %}">Return to the homepage</a>
+
+ 	{% else %}
+ 	<strong>Register here!</strong>
+
+	<form action="{% url 'ratings:register' %}" id="user_form" method="POST" enctype="multipart/form-data">
+
+		{% csrf_token %}
+
+		<!-- <label>Choose a username: -->
+			<!-- <input type="text" name="username"> -->
+		<!-- </label> -->
+		<!-- <label>Choose a password: -->
+			<!-- <input type="password" name="password"> -->
+		<!-- </label> -->
+		<!-- <input type="submit" value="Register!"> -->
+	<!-- </form> -->
+
+		{{ user_form.as_p }}
+		<!-- {{ profile_form.as_p }} -->
+
 		<input type="submit" value="Register!">
 	</form>
+	{% endif %}
 
 </body>
 </html>

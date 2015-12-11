@@ -2,8 +2,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.models import User, UserManager
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, render, render_to_response, redirect
+from django.template import RequestContext
 
+# from .forms import UserForm, UserProfileForm
+from .forms import UserForm
 from .models import User, Movie, Rating
 
 
@@ -56,22 +59,67 @@ def login_view(request):
 		return render(request, 'ratings/login.html')
 
 
-def register(request):
-	""" Create a new user account """
+# def register(request):
+# 	""" Create a new user account """
 
-	if request.method == "POST":
-		username = request.POST['username']
-		password = request.POST['password']
-
-		usermanager = UserManager()
-		user = usermanager.create_user(username=username, password=password)
-		# user = get_user_model().objects.create_user ... ???
+# 	if request.method == "POST":
+# 		username = request.POST['username']
+# 		password = request.POST['password']
+		
+		# First attempt - AttributeError Manager object has no attribute create_user
+		# user = User.objects.create_user(username=username, password=password)
 		# user.save() # save new user in db
-		login(request, user) # add user to session
-		messages.add_message(request, messages.SUCCESS, "Thank you for registering!")
-		return redirect('ratings:index')
+
+		# Second attempt - various versions of the below
+		# TypeError unbound method create_user() must be called with UserManager instance
+		# Type Error NoneType object is not callable
+	# 	usermanager = UserManager()
+	# 	usermanager.objects.create_user(username=username, password=password)
+
+	# 	login(request, user) # add user to session
+	# 	messages.add_message(request, messages.SUCCESS, "Thank you for registering!")
+	# 	return redirect('ratings:index')
+	# else:
+	# 	return render(request, 'ratings/register.html')
+
+
+def register(request):
+	context = RequestContext(request)
+	registered = False
+	if request.method == "POST":
+		user_form = UserForm(data=request.POST)
+		# profile_form = UserProfileForm(data=request.POST)
+
+		# if user_form.is_valid() and profile_form.is_valid():
+		if user_form.is_valid():
+			user = user_form.save()
+			user.set_password(user.password)
+			user.save()
+
+			# profile = profile_form.save(commit=False)
+			# profile.user = user 
+
+			# profile.save()
+
+			registered = True
+			
+			# messages.add_message(request, messages.SUCCESS, "Thank you for registering!")
+			# return redirect('ratings:index')
+		
+		else:
+			print user_form.errors
+			# print user_form.errors, profile_form.errors
+			# messages.add_message(request, messages.ERROR, "Invalid login. Please enter again.")
+			# return redirect('ratings:register')
+
 	else:
-		return render(request, 'ratings/register.html')
+		user_form = UserForm()
+		# profile_form = UserProfileForm()
+		
+	return render_to_response(
+		'ratings/register.html', 
+		{'user_form': user_form, 'registered': registered},
+		context)
 
 
 def logout_view(request):

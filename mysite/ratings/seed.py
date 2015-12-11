@@ -2,24 +2,24 @@ from datetime import datetime
 import json
 
 
-def convert_users():
-	"""Converts user seed data to JSON and writes it to a fixtures file - this way Django will know how to load it into the database."""
+def convert_reviewers():
+	"""Converts reviewers seed data to JSON and writes it to a fixtures file - this way Django will know how to load it into the database."""
 
 	seed_file = open("seed_data/u.user")
 	seed_data = seed_file.read().split("\n")
 
-	new_users = []
+	new_reviewers = []
 	pk = 1
 
 	for line in seed_data:
-		user_data = line.split("|")
-		if user_data == ['']:
+		reviewer_data = line.split("|")
+		if reviewer_data == ['']:
 			continue
-		age = int(user_data[1])
-		zipcode = user_data[4]
+		age = int(reviewer_data[1])
+		zipcode = reviewer_data[4]
 
-		new_user = {
-			"model": "ratings.User",
+		new_reviewer = {
+			"model": "ratings.Reviewer",
 			"pk": pk,
 			"fields": {
 				"age": age,
@@ -27,12 +27,12 @@ def convert_users():
 			}
 		}
 
-		new_users.append(new_user)
+		new_reviewers.append(new_reviewer)
 		pk += 1
 
-	json_users = json.dumps(new_users)
-	fixture_file = open("fixtures/initial_data_users.json", "w")
-	fixture_file.write(json_users)
+	json_reviewers = json.dumps(new_reviewers)
+	fixture_file = open("fixtures/initial_data_reviewers.json", "w")
+	fixture_file.write(json_reviewers)
 	fixture_file.close()
 
 
@@ -92,14 +92,14 @@ def convert_ratings():
 		if rating_data == ['']:
 			continue
 
-		user, movie, score = int(rating_data[0]), int(rating_data[1]), int(rating_data[2])
+		reviewer_id, movie_id, score = int(rating_data[0]), int(rating_data[1]), int(rating_data[2])
 
 		new_rating = {
 			"model": "ratings.Rating",
 			"pk": pk,
 			"fields": {
-				"user": user,
-				"movie": movie,
+				"reviewer_id": reviewer_id,
+				"movie_id": movie_id,
 				"score": score
 			}
 		}
@@ -115,6 +115,6 @@ def convert_ratings():
 
 if __name__ == "__main__":
 
-	convert_users()
+	convert_reviewers()
 	convert_movies()
 	convert_ratings()
