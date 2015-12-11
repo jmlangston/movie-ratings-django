@@ -11,7 +11,7 @@ urlpatterns = [
 	url(r'^users/(?P<user_id>[0-9]+)/$', views.user_details, name='user_details'),
 	url(r'^movies/$', views.movie_list, name='movie_list'),
 	url(r'^movies/(?P<movie_id>[0-9]+)/$', views.movie_details, name='movie_details'),
-	url(r'^login/$', views.login_view, name='login'),
-	url(r'^logout/$', views.logout_view, name='logout'),
+	url(r'^login/$', views.user_login, name='login'),
+	url(r'^logout/$', views.user_logout, name='logout'),
 	url(r'^register/$', views.register, name='register')
 ]

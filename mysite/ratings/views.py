@@ -41,46 +41,45 @@ def movie_details(request, movie_id):
 	return render(request, 'ratings/movie_details.html', {'movie': movie})
 
 
-def login_view(request):
-	""" Login page """
-
-	if request.method == "POST":
-		username = request.POST['username']
-		password = request.POST['password']
-		user = authenticate(username=username, password=password) # returns User object if valid, returns None if invalid
-		if user is not None:
-			if user.is_active:
-				login(request, user) # add user to session
-				messages.add_message(request, messages.SUCCESS, "You have successfully logged in!")
-				return redirect('ratings:index') # redirect to home page
-		else:
-			return render(request, 'ratings/login.html') # TODO - add flash message re invalid credentials
-	else:
-		return render(request, 'ratings/login.html')
-
-
-# def register(request):
-# 	""" Create a new user account """
+# def login_view(request):
+# 	""" Login page """
 
 # 	if request.method == "POST":
 # 		username = request.POST['username']
 # 		password = request.POST['password']
-		
-		# First attempt - AttributeError Manager object has no attribute create_user
-		# user = User.objects.create_user(username=username, password=password)
-		# user.save() # save new user in db
+# 		user = authenticate(username=username, password=password) # returns User object if valid, returns None if invalid
+# 		if user is not None:
+# 			if user.is_active:
+# 				login(request, user) # add user to session
+# 				messages.add_message(request, messages.SUCCESS, "You have successfully logged in!")
+# 				return redirect('ratings:index') # redirect to home page
+# 		else:
+# 			return render(request, 'ratings/login.html') # TODO - add flash message re invalid credentials
+# 	else:
+# 		return render(request, 'ratings/login.html')
 
-		# Second attempt - various versions of the below
-		# TypeError unbound method create_user() must be called with UserManager instance
-		# Type Error NoneType object is not callable
-	# 	usermanager = UserManager()
-	# 	usermanager.objects.create_user(username=username, password=password)
 
-	# 	login(request, user) # add user to session
-	# 	messages.add_message(request, messages.SUCCESS, "Thank you for registering!")
-	# 	return redirect('ratings:index')
-	# else:
-	# 	return render(request, 'ratings/register.html')
+def user_login(request):
+	context = RequestContext
+	if request.method == "POST":
+		username = request.POST['username']
+		password = request.POST['password']
+		user = authenticate(username=username, password=password)
+		if user:
+			if user.is_active:
+				login(request, user)
+				messages.add_message(request, messages.SUCCESS, "You have successfully logged in!")
+				return redirect('ratings:index')
+				# return redirect('ratings:index')
+			else:
+				return HttpResponse("Your Movie Ratings account is disabled.")
+		else:
+			print "Invalid login details: {0}, {1}".format(username, password)
+			return HttpResponse("Invalid login.")
+
+	else:
+		# return render_to_response('ratings:login', {}, context)
+		return render(request, 'ratings/login.html')
 
 
 def register(request):
@@ -116,13 +115,22 @@ def register(request):
 		user_form = UserForm()
 		# profile_form = UserProfileForm()
 		
-	return render_to_response(
-		'ratings/register.html', 
-		{'user_form': user_form, 'registered': registered},
-		context)
+	# return render_to_response(
+		# 'ratings/register.html', 
+		# {'user_form': user_form, 'registered': registered},
+		# context)
+
+	return render(request, 'ratings/register.html', {'user_form': user_form, 'registered': registered})
 
 
-def logout_view(request):
+def user_logout(request):
 	logout(request) # won't throw an error if user wasn't logged in
 	messages.add_message(request, messages.SUCCESS, "You have successfully logged out!")
 	return redirect('ratings:index') # redirect to home page
+
+
+# @login_required
+# def user_logout(request):
+	# logout(request)
+	# return redirect('ratings:index')
+
