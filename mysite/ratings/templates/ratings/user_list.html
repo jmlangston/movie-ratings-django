@@ -3,9 +3,9 @@
 {% block content %}
 
 	<ul>
-		{% for user in user_list %}
+		{% for reviewer in reviewer_list %}
 		<li>
-			<a href="{% url 'ratings:user_details' user.id %}">User {{ user.id }}</a>
+			<a href="{% url 'ratings:user_details' reviewer.id %}">User {{ reviewer.id }}</a>
 		</li>
 		{% endfor %}
 	</ul>
