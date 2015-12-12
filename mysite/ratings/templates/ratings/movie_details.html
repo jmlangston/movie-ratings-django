@@ -10,4 +10,12 @@
 
 	<h2>All reviews</h2>
 
+		<ul>
+			{% for rating in ratings %}
+				<li>Rating of {{ rating.score }} by User {{ rating.reviewer_id.id }}</li>
+			{% endfor %}		
+
+		</ul>
+
+
 {% endblock %}

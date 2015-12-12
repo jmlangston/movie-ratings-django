@@ -8,6 +8,7 @@
 		<p>Zipcode: {{ reviewer.zipcode }}</p>
 	
 	<h2>Movies Reviewed</h2>
+		<!-- <p>This user has reviewed {% ratings.count() %} movies</p> -->
 		<ul>
 		{% for rating in ratings %}
 			<li>{{ rating.score }} for {{ rating.movie_id }}</li>
