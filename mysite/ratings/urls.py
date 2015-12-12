@@ -15,5 +15,6 @@ urlpatterns = [
 	# url(r'^movies/(?P<pk>[0-9]+)/$', views.MovieDetailView.as_view(), name='movie_details'),
 	url(r'^login/$', views.user_login, name='login'),
 	url(r'^logout/$', views.user_logout, name='logout'),
-	url(r'^register/$', views.register, name='register')
+	url(r'^register/$', views.register, name='register'),
+	url(r'^add_review/$', views.add_review, name='add_review')
 ]

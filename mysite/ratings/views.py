@@ -101,3 +101,16 @@ def user_logout(request):
 	logout(request) # won't throw an error if user wasn't logged in
 	messages.add_message(request, messages.SUCCESS, "You have successfully logged out!")
 	return redirect('ratings:index') # redirect to home page
+
+
+# def add_review(request, user_id, movie_id):
+	# """ Add a new score for a movie by a reviewer """
+	# get new score from form
+	# if user's first review
+	# create new reviewer
+	# create new UserProfile with reviewer_id and user_id
+	# create new rating 
+	
+	# score = request.POST['score']
+
+	# reviewer = Reviewer.objects.get()
