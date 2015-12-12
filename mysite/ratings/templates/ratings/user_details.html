@@ -2,9 +2,16 @@
 
 {% block content %}
 
-	<h2>Reviewer Profile</h2>
-	<p>Age: {{ reviewer.age }}</p>
-	<p>Zipcode: {{ reviewer.zipcode }}</p>
+	<h2>Movie Reviewer Profile</h2>
+		<p>Username: {{ reviewer.username }}</p>
+		<p>Age: {{ reviewer.age }}</p>
+		<p>Zipcode: {{ reviewer.zipcode }}</p>
 	
+	<h2>Movies Reviewed</h2>
+		<ul>
+		{% for rating in ratings %}
+			<li>{{ rating.score }} for {{ rating.movie_id }}</li>
+		{% endfor %}
+		</ul>
 
 {% endblock %}

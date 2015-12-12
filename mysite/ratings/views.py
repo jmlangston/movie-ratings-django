@@ -23,17 +23,18 @@ def index(request):
 
 class UserListView(generic.ListView):
 	model = Reviewer
-	template_name = 'ratings/reviewer_list.html'
+	template_name = 'ratings/user_list.html'
 
 
-# def user_details(request, user_id):
-# 	""" Displays information about a given movie reviewer (user) """
-# 	reviewer = get_object_or_404(Reviewer, pk=reviewer_id)
-# 	return render(request, 'ratings/user_details.html', {'reviewer': reviewer})
+def user_details(request, reviewer_id):
+	""" Displays information about a given movie reviewer (user) """
+	reviewer = get_object_or_404(Reviewer, pk=reviewer_id)
+	ratings = Rating.objects.filter(reviewer_id=reviewer_id)
+	return render(request, 'ratings/user_details.html', {'reviewer': reviewer, 'ratings': ratings})
 
-class UserDetailView(generic.DetailView):
-	model = Reviewer
-	template_name = 'ratings/reviewer_details.html'
+# class UserDetailView(generic.DetailView):
+# 	model = Reviewer
+# 	template_name = 'ratings/reviewer_details.html'
 
 
 # def movie_list(request):
@@ -47,14 +48,15 @@ class MovieListView(generic.ListView):
 	template_name = 'ratings/movie_list.html'
 
 
-# def movie_details(request, movie_id):
-# 	""" Displays information about a given movie """
-# 	movie = get_object_or_404(Movie, pk=movie_id)
-# 	return render(request, 'ratings/movie_details.html', {'movie': movie})
+def movie_details(request, movie_id):
+	""" Displays information about a given movie """
+	movie = get_object_or_404(Movie, pk=movie_id)
+	ratings = Rating.objects.filter(movie_id=movie_id)
+	return render(request, 'ratings/movie_details.html', {'movie': movie, 'ratings': ratings})
 
-class MovieDetailView(generic.DetailView):
-	model = Movie
-	template_name = 'ratings/movie_details.html'
+# class MovieDetailView(generic.DetailView):
+# 	model = Movie
+# 	template_name = 'ratings/movie_details.html'
 
 
 def register(request):
