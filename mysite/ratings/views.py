@@ -58,12 +58,13 @@ def movie_details(request, movie_id):
 		current_user = request.user
 		user_profile = UserProfile.objects.get(user=current_user)
 		reviewer = user_profile.reviewer
-		user_ratings = Rating.objects.filter(movie_id=movie_id, reviewer_id=reviewer)
+		user_rating = Rating.objects.get(movie_id=movie_id, reviewer_id=reviewer)
 		user_has_rated = True
 	except Exception:
+		user_rating = 'n/a'
 		user_has_rated = False
 
-	return render(request, 'ratings/movie_details.html', {'movie': movie, 'ratings': ratings, 'user_has_rated': user_has_rated})
+	return render(request, 'ratings/movie_details.html', {'movie': movie, 'ratings': ratings, 'user_has_rated': user_has_rated, 'user_rating': user_rating})
 
 
 def register(request):
@@ -144,5 +145,23 @@ def add_review(request, movie_id):
 
 	new_rating = Rating.objects.create(reviewer_id=reviewer, movie_id=movie, score=score)
 	messages.add_message(request, messages.SUCCESS, "NEW RATING ADDED")
+	return redirect('ratings:movie_details', movie.id)
+
+
+def update_review(request, movie_id):
+	updated_score = request.POST['updated_score']
+	current_user = request.user
+
+	movie = Movie.objects.get(id=movie_id)
+
+	user_profile = UserProfile.objects.get(user=current_user)
+	reviewer = user_profile.reviewer
+
+	rating = Rating.objects.get(movie_id=movie, reviewer_id=reviewer)
+	rating.score = updated_score
+	rating.save()
+
+	messages.add_message(request, messages.SUCCESS, "You have updated your rating for this movie")
+
 	return redirect('ratings:movie_details', movie.id)
 

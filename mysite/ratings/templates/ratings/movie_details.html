@@ -15,22 +15,35 @@
 		{% if user.is_authenticated and not user_has_rated %}
 		<form action="{% url 'ratings:add_review' movie.id %}" method="POST">
 			{% csrf_token %}
-				<label>Select a score below (1 being lowest, 5 highest)
-				<select name="score">
+			<label>Select a score below (1 being lowest, 5 highest)
+			<select name="score">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+			</select>
+			</label>
+			<input type="submit" value="Add review">
+		</form>
+		{% endif %}
+
+		{% if user.is_authenticated and user_has_rated %}
+			<p>You gave this movie a rating of {{ user_rating.score }}</p>
+
+			<form action="{% url 'ratings:update_review' movie.id %}" method="POST">
+				{% csrf_token %}
+				<label>You may update your rating for this movie here:
+				<select name="updated_score">
 					<option value="1">1</option>
 					<option value="2">2</option>
 					<option value="3">3</option>
 					<option value="4">4</option>
-					<option value="5">5</option>
+					<option value="5">5</option>						
 				</select>
 				</label>
-				<input type="submit" value="Add review">
-
+				<input type="submit" value="Update rating">	
 			</form>
-		{% endif %}
-
-		{% if user.is_authenticated and user_has_rated %}
-			<p>You're already reviewed this movie</p>
 		{% endif %}
 
 	<h2>All reviews</h2>

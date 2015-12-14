@@ -29,7 +29,7 @@ class Rating(models.Model):
 	score = models.IntegerField(default=0)
 
 	def __str__(self):
-		return "Rating of %d for %s" % (self.score, self.movie)
+		return "Rating of %d for %s" % (self.score, self.movie_id)
 
 
 class UserProfile(models.Model):
