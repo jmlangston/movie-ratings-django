@@ -49,14 +49,21 @@ class MovieListView(generic.ListView):
 
 
 def movie_details(request, movie_id):
-	""" Displays information about a given movie """
+	""" Displays information about a given movie and options for reviewing the movie """
+
 	movie = get_object_or_404(Movie, pk=movie_id)
 	ratings = Rating.objects.filter(movie_id=movie_id)
-	return render(request, 'ratings/movie_details.html', {'movie': movie, 'ratings': ratings})
 
-# class MovieDetailView(generic.DetailView):
-# 	model = Movie
-# 	template_name = 'ratings/movie_details.html'
+	try:
+		current_user = request.user
+		user_profile = UserProfile.objects.get(user=current_user)
+		reviewer = user_profile.reviewer
+		user_ratings = Rating.objects.filter(movie_id=movie_id, reviewer_id=reviewer)
+		user_has_rated = True
+	except Exception:
+		user_has_rated = False
+
+	return render(request, 'ratings/movie_details.html', {'movie': movie, 'ratings': ratings, 'user_has_rated': user_has_rated})
 
 
 def register(request):

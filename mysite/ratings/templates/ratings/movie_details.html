@@ -12,7 +12,7 @@
 			<p>Please log in to add your review</p>
 		{% endif%}
 
-		{% if user.is_authenticated %}
+		{% if user.is_authenticated and not user_has_rated %}
 		<form action="{% url 'ratings:add_review' movie.id %}" method="POST">
 			{% csrf_token %}
 				<label>Select a score below (1 being lowest, 5 highest)
@@ -27,7 +27,10 @@
 				<input type="submit" value="Add review">
 
 			</form>
-			
+		{% endif %}
+
+		{% if user.is_authenticated and user_has_rated %}
+			<p>You're already reviewed this movie</p>
 		{% endif %}
 
 	<h2>All reviews</h2>
