@@ -13,7 +13,7 @@
 		{% endif%}
 
 		{% if user.is_authenticated %}
-			<form action="{% url 'ratings:add_review' user.id movie.id %}" method="POST">
+		<form action="{% url 'ratings:add_review' movie.id %}" method="POST">
 			{% csrf_token %}
 				<label>Select a score below (1 being lowest, 5 highest)
 				<select name="score">

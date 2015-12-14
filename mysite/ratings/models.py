@@ -23,7 +23,7 @@ class Movie(models.Model):
 
 
 class Rating(models.Model):
-
+	# TODO - remove id from column names
 	reviewer_id = models.ForeignKey(Reviewer)
 	movie_id = models.ForeignKey(Movie)
 	score = models.IntegerField(default=0)
@@ -35,7 +35,7 @@ class Rating(models.Model):
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
 
-	reviewer_id = models.ForeignKey(Reviewer)
+	reviewer = models.ForeignKey(Reviewer)
 
 	def __str__(self):
 		return self.user.username

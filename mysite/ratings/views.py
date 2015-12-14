@@ -7,7 +7,7 @@ from django.template import RequestContext
 from django.views import generic
 
 from .forms import UserForm
-from .models import Movie, Rating, Reviewer
+from .models import Movie, Rating, Reviewer, UserProfile
 
 
 def index(request):
@@ -103,14 +103,39 @@ def user_logout(request):
 	return redirect('ratings:index') # redirect to home page
 
 
-# def add_review(request, user_id, movie_id):
-	# """ Add a new score for a movie by a reviewer """
-	# get new score from form
-	# if user's first review
+def add_review(request, movie_id):	
+	""" Add a new score for a movie by a reviewer """
+	# save variables: new score, movie, score
+
+	# look up UserProfile - if none, need to add
+	# if user's first review / if there's no corresponding reviewer object
 	# create new reviewer
 	# create new UserProfile with reviewer_id and user_id
 	# create new rating 
+	# if they have already rated, they can update their rating
 	
-	# score = request.POST['score']
+	score = request.POST['score']
+	current_user = request.user
+	movie = Movie.objects.get(id=movie_id)	
 
-	# reviewer = Reviewer.objects.get()
+	try:
+		user_profile = UserProfile.objects.get(user=current_user)
+		reviewer = user_profile.reviewer
+		messages.add_message(request, messages.SUCCESS, "REVIEWER FOUND")
+	
+	# except Exception:
+	except UserProfile.DoesNotExist:
+		reviewer = Reviewer.objects.create(username=current_user.username)
+		# don't save while testing 
+		# reviewer = Reviewer(username=current_user.username)
+
+		userprofile = UserProfile.objects.create(user=current_user, reviewer=reviewer)
+		# userprofile = UserProfile(user=current_user, reviewer=reviewer)
+
+		messages.add_message(request, messages.SUCCESS, "REVIEWER %s ADDED" % userprofile.user.username)
+
+
+	new_rating = Rating.objects.create(reviewer_id=reviewer, movie_id=movie, score=score)
+	messages.add_message(request, messages.SUCCESS, "NEW RATING ADDED")
+	return redirect('ratings:movie_details', movie.id)
+
