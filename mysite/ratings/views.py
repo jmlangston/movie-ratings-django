@@ -15,15 +15,13 @@ def index(request):
 	return render(request, 'ratings/index.html')
 
 
-# def user_list(request):
-# 	""" Displays a list of movie reviewers (users) """
-# 	reviewer_list = Reviewer.objects.order_by('id')
-# 	context = {'reviewer_list': reviewer_list}
-# 	return render(request, 'ratings/reviewer_list.html', context)
-
 class UserListView(generic.ListView):
-	model = Reviewer
+	
 	template_name = 'ratings/user_list.html'
+	context_object_name = 'custom_reviewer_list'
+
+	def get_queryset(self):
+		return Reviewer.objects.all().order_by('-id')
 
 
 def user_details(request, reviewer_id):
