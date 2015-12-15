@@ -16,7 +16,7 @@ def index(request):
 
 
 class UserListView(generic.ListView):
-	
+
 	template_name = 'ratings/user_list.html'
 	context_object_name = 'custom_reviewer_list'
 
@@ -75,11 +75,21 @@ def register(request):
 			user.set_password(user.password)
 			user.save()
 			registered = True
+			auth_user = authenticate(username=request.POST['username'], password=request.POST['password'])
+			if auth_user:
+				if auth_user.is_active:
+					login(request, auth_user)
+					messages.add_message(request, messages.SUCCESS, "Thank you for registering. You are logged in.")
+					return redirect('ratings:index')
+				else:
+					return HttpResponse("Your Movie Ratings account is disabled.")
+			else: 
+				return HttpResponse("Could not authenticate.")
 		else:
-			print user_form.errors
+			return HttpResponse("Invalid login form.")
 	else:
 		user_form = UserForm()
-	return render(request, 'ratings/register.html', {'user_form': user_form, 'registered': registered})
+		return render(request, 'ratings/register.html', {'user_form': user_form})
 
 
 def user_login(request):
