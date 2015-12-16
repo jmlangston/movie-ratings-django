@@ -8,17 +8,18 @@
 
 	{% if not user.is_authenticated %}
 		<p>Log in or create an account to rate movies!</p>
-		<a href="{% url 'ratings:login' %}">Log In</a>
-		<a href="{% url 'ratings:register' %}">Create an Account</a>
+
+		<div><a href="{% url 'ratings:login' %}">Log In</a></div>
+		<div><a href="{% url 'ratings:register' %}">Create an Account</a><div/>
 	{% endif %}
 
 
 	{% if user.is_authenticated %}
 		<p>You are logged in as {{ user.username }}</p>
-		<a href="{% url 'ratings:logout' %}">Log Out</a>
+		<div><a href="{% url 'ratings:logout' %}">Log Out</a><div/>
 	{% endif %}
 
-	<a href="{% url 'ratings:index' %}">Home page</a>
+	<div><a href="{% url 'ratings:index' %}">Home page</a></div>
 
 	<hr>
 

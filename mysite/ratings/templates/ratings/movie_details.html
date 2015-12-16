@@ -2,9 +2,11 @@
 
 {% block content %}
 
+	<h4><a href="{% url 'ratings:movie_list' %}">Back to all movies</a></h4>
+
 	<h2>{{ movie.title }}</h2>
-	<p>Released: {{ movie.release_date}}</p>
-	<p>IMDb page: {{ movie.imdb_url}}</p>
+	<p>Released: {{ movie.release_date|date:'F j, Y' }}</p>
+	<p><a href="{{ movie.imdb_url }}">IMDb page</a></p>
 
 	<h2>Review this movie</h2>
 
@@ -49,10 +51,12 @@
 	<h2>All reviews</h2>
 
 		<ul>
-			{% for rating in ratings %}
-				<li>Rating of {{ rating.score }} by User {{ rating.reviewer_id.id }}</li>
-			{% endfor %}		
-
+			{% for rating in ratings.with_username %}
+				<li>Rating of {{ rating.score }} by User <a href="{% url 'ratings:user_details' rating.reviewer_id.id %}">{{ rating.reviewer_id.username }}</a></li>
+			{% endfor %}	
+			{% for rating in ratings.no_username %}
+				<li>Rating of {{ rating.score }} by User <a href="{% url 'ratings:user_details' rating.reviewer_id.id %}">{{ rating.reviewer_id.id }}</a></li>	
+			{% endfor %}
 		</ul>
 
 

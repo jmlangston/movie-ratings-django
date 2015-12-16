@@ -53,7 +53,15 @@ def movie_details(request, movie_id):
 	""" Displays information about a given movie and options for reviewing the movie """
 
 	movie = get_object_or_404(Movie, pk=movie_id)
-	ratings = Rating.objects.filter(movie_id=movie_id)
+	
+	all_ratings_for_movie = list(Rating.objects.filter(movie_id=movie_id).order_by('reviewer_id'))
+	ratings_with_username = []
+	for rating in all_ratings_for_movie:
+		if rating.reviewer_id.username != '':
+			i = all_ratings_for_movie.index(rating)
+			has_username = all_ratings_for_movie.pop(i)
+			ratings_with_username.append(has_username)
+	ratings = {'with_username': ratings_with_username, 'no_username': all_ratings_for_movie}
 
 	try:
 		current_user = request.user
