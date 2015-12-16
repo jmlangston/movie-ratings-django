@@ -42,8 +42,11 @@ def user_details(request, reviewer_id):
 # 	return render(request, 'ratings/movie_list.html', context)
 
 class MovieListView(generic.ListView):
-	model = Movie
 	template_name = 'ratings/movie_list.html'
+	context_object_name = 'movies_alpha_order'
+
+	def get_queryset(self):
+		return Movie.objects.all().order_by('title')
 
 
 def movie_details(request, movie_id):

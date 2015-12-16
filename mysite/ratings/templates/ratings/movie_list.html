@@ -3,7 +3,7 @@
 {% block content %}
 
 	<ul>
-		{% for movie in movie_list %}
+		{% for movie in movies_alpha_order %}
 		<li>
 			<a href="{% url 'ratings:movie_details' movie.id %}">{{ movie.title }}</a>
 		</li>
