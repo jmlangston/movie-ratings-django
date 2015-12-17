@@ -10,7 +10,7 @@
 	<h2>Movies Reviewed</h2>
 		<ul>
 		{% for rating in ratings %}
-			<li>{{ rating.score }} for {{ rating.movie_id }}</li>
+			<li>{{ rating.score }} for <a href="{% url 'ratings:movie_details' rating.movie_id.id %}">{{ rating.movie_id.title }}</a></li>
 		{% endfor %}
 		</ul>
 

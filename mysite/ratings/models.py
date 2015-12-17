@@ -2,9 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 class Reviewer(models.Model):
-	# email = models.CharField(max_length=100)
-	# password = models.CharField(max_length=15)
-
 	username = models.CharField(max_length=20)
 	age = models.IntegerField(default=0)
 	zipcode = models.CharField(max_length=5)
@@ -34,7 +31,6 @@ class Rating(models.Model):
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
-
 	reviewer = models.ForeignKey(Reviewer)
 
 	def __str__(self):

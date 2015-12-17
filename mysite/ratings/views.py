@@ -16,7 +16,7 @@ def index(request):
 
 
 class UserListView(generic.ListView):
-
+	""" Displays a list of all users """
 	template_name = 'ratings/user_list.html'
 	context_object_name = 'custom_reviewer_list'
 
@@ -25,23 +25,14 @@ class UserListView(generic.ListView):
 
 
 def user_details(request, reviewer_id):
-	""" Displays information about a given movie reviewer (user) """
+	""" Displays information about a given movie reviewer """
 	reviewer = get_object_or_404(Reviewer, pk=reviewer_id)
 	ratings = Rating.objects.filter(reviewer_id=reviewer_id)
 	return render(request, 'ratings/user_details.html', {'reviewer': reviewer, 'ratings': ratings})
 
-# class UserDetailView(generic.DetailView):
-# 	model = Reviewer
-# 	template_name = 'ratings/reviewer_details.html'
-
-
-# def movie_list(request):
-# 	""" Displays a list of movies """
-# 	movie_list = Movie.objects.order_by('id')
-# 	context = {'movie_list': movie_list}
-# 	return render(request, 'ratings/movie_list.html', context)
 
 class MovieListView(generic.ListView):
+	""" Displays a list of all movies """
 	template_name = 'ratings/movie_list.html'
 	context_object_name = 'movies_alpha_order'
 
@@ -50,10 +41,9 @@ class MovieListView(generic.ListView):
 
 
 def movie_details(request, movie_id):
-	""" Displays information about a given movie and options for reviewing the movie """
+	""" Displays information about a given movie and options for reviewing the movie. If a user is logged in, they have the option to add a review for the movie. If they have already rated the movie, they have the option to update their rating. If a user is not logged in, there will be a message indicating they can rate the movie if they log in. """
 
 	movie = get_object_or_404(Movie, pk=movie_id)
-	
 	all_ratings_for_movie = list(Rating.objects.filter(movie_id=movie_id).order_by('reviewer_id'))
 	ratings_with_username = []
 	for rating in all_ratings_for_movie:
@@ -62,7 +52,6 @@ def movie_details(request, movie_id):
 			has_username = all_ratings_for_movie.pop(i)
 			ratings_with_username.append(has_username)
 	ratings = {'with_username': ratings_with_username, 'no_username': all_ratings_for_movie}
-
 	try:
 		current_user = request.user
 		user_profile = UserProfile.objects.get(user=current_user)
@@ -72,11 +61,11 @@ def movie_details(request, movie_id):
 	except Exception:
 		user_rating = 'n/a'
 		user_has_rated = False
-
 	return render(request, 'ratings/movie_details.html', {'movie': movie, 'ratings': ratings, 'user_has_rated': user_has_rated, 'user_rating': user_rating})
 
 
 def register(request):
+	""" Register a new user """
 	context = RequestContext(request)
 	registered = False
 	if request.method == "POST":
@@ -104,6 +93,7 @@ def register(request):
 
 
 def user_login(request):
+	""" Log in an existing user """
 	context = RequestContext
 	if request.method == "POST":
 		username = request.POST['username']
@@ -125,62 +115,39 @@ def user_login(request):
 
 
 def user_logout(request):
+	""" Log out a user """
 	logout(request) # won't throw an error if user wasn't logged in
 	messages.add_message(request, messages.SUCCESS, "You have successfully logged out!")
-	return redirect('ratings:index') # redirect to home page
+	return redirect('ratings:index')
 
 
 def add_review(request, movie_id):	
-	""" Add a new score for a movie by a reviewer """
-	# save variables: new score, movie, score
-
-	# look up UserProfile - if none, need to add
-	# if user's first review / if there's no corresponding reviewer object
-	# create new reviewer
-	# create new UserProfile with reviewer_id and user_id
-	# create new rating 
-	# if they have already rated, they can update their rating
+	""" Adds a new score for a movie by a reviewer. If the user has not reviewed any movies yet, this method will create UserProfile and Reviewer objects """
 	
 	score = request.POST['score']
 	current_user = request.user
 	movie = Movie.objects.get(id=movie_id)	
-
 	try:
 		user_profile = UserProfile.objects.get(user=current_user)
 		reviewer = user_profile.reviewer
-		messages.add_message(request, messages.SUCCESS, "REVIEWER FOUND")
-	
-	# except Exception:
 	except UserProfile.DoesNotExist:
 		reviewer = Reviewer.objects.create(username=current_user.username)
-		# don't save while testing 
-		# reviewer = Reviewer(username=current_user.username)
-
 		userprofile = UserProfile.objects.create(user=current_user, reviewer=reviewer)
-		# userprofile = UserProfile(user=current_user, reviewer=reviewer)
-
-		messages.add_message(request, messages.SUCCESS, "REVIEWER %s ADDED" % userprofile.user.username)
-
-
 	new_rating = Rating.objects.create(reviewer_id=reviewer, movie_id=movie, score=score)
-	messages.add_message(request, messages.SUCCESS, "NEW RATING ADDED")
+	messages.add_message(request, messages.SUCCESS, "New movie rating added")
 	return redirect('ratings:movie_details', movie.id)
 
 
 def update_review(request, movie_id):
+	""" Allows a user to update their rating for a movie they're already reviewed """ 
 	updated_score = request.POST['updated_score']
 	current_user = request.user
-
 	movie = Movie.objects.get(id=movie_id)
-
 	user_profile = UserProfile.objects.get(user=current_user)
 	reviewer = user_profile.reviewer
-
 	rating = Rating.objects.get(movie_id=movie, reviewer_id=reviewer)
 	rating.score = updated_score
 	rating.save()
-
 	messages.add_message(request, messages.SUCCESS, "You have updated your rating for this movie")
-
 	return redirect('ratings:movie_details', movie.id)
 
