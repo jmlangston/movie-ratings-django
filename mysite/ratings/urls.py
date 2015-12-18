@@ -15,5 +15,6 @@ urlpatterns = [
 	url(r'^logout/$', views.user_logout, name='logout'),
 	url(r'^register/$', views.register, name='register'),
 	url(r'^add_review/(?P<movie_id>[0-9]+)/$', views.add_review, name='add_review'),
-	url(r'^update_review/(?P<movie_id>[0-9]+)/$', views.update_review, name='update_review')
+	url(r'^update_review/(?P<movie_id>[0-9]+)/$', views.update_review, name='update_review'),
+	url(r'^testing/$', views.test_view, name='test_view')
 ]

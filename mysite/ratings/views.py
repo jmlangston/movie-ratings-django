@@ -8,6 +8,7 @@ from django.views import generic
 
 from .forms import UserForm
 from .models import Movie, Rating, Reviewer, UserProfile
+import correlation
 
 
 def index(request):
@@ -51,6 +52,8 @@ def movie_details(request, movie_id):
 			i = all_ratings_for_movie.index(rating)
 			has_username = all_ratings_for_movie.pop(i)
 			ratings_with_username.append(has_username)
+		else:
+			continue
 	ratings = {'with_username': ratings_with_username, 'no_username': all_ratings_for_movie}
 	try:
 		current_user = request.user
@@ -151,3 +154,9 @@ def update_review(request, movie_id):
 	messages.add_message(request, messages.SUCCESS, "You have updated your rating for this movie")
 	return redirect('ratings:movie_details', movie.id)
 
+
+def test_view(request):
+	user1 = Reviewer.objects.get(pk=949)
+	user2 = Reviewer.objects.get(pk=1)
+	corr = user1.similarity(user2)
+	return HttpResponse(corr)
